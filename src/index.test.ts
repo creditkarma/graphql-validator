@@ -4,7 +4,7 @@ import * as fs from 'fs'
 import * as rimraf from 'rimraf'
 import * as mkdirp from 'mkdirp'
 import * as graphql from 'graphql'
-import loadSchema from '@creditkarma/graphql-loader'
+import { loadSchema } from '@creditkarma/graphql-loader'
 import * as validator from './index'
 
 describe('GraphQL Validator', () => {

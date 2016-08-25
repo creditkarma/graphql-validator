@@ -9,7 +9,7 @@ in the src/ directory to validate all the files in the file glob CLI parameter.
 
 const program = require('commander')
 const packagejson = require('../package.json')
-const loader = require('graphql-schema-loader')
+const loader = require('@creditkarma/graphql-loader')
 const validator = require('../dist/index')
 
 program
@@ -23,7 +23,10 @@ if (!program.args.length || !program.schema) {
 } else {
   loadSchema()
     .then(validateQueries)
-    .catch(() => process.exit(1))
+    .catch((err) => {
+      console.log(err)
+      process.exit(1)
+    })
 }
 
 function loadSchema() {
