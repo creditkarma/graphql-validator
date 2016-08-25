@@ -1,6 +1,6 @@
 {
   "name": "@creditkarma/graphql-validator",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Validate queries agains a GraphQL Schema",
   "main": "./dist/index.js",
   "scripts": {
