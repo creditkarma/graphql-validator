@@ -48,6 +48,7 @@
     "graphql": "^0.6.1 || ^0.7.0",
     "graphql-tools": "^0.8.0"
   },
+  "typings": "dist/index.d.ts",
   "typescript": {
     "definition": "dist/index.d.ts"
   }
