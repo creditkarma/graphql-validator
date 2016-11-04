@@ -4,7 +4,7 @@
   "description": "Validate queries agains a GraphQL Schema",
   "main": "./dist/index.js",
   "scripts": {
-    "clean": "rimraf coverage/ dist/ node_modules/ typings/",
+    "clean": "rimraf coverage/ dist/ node_modules/",
     "build": "tsc",
     "build:watch": "tsc --watch",
     "lint": "tslint src/**/*",
