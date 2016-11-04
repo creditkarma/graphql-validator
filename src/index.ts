@@ -1,32 +1,31 @@
 import * as fs from 'fs'
-import * as graphql from 'graphql'
+import { Document, GraphQLSchema, GraphQLError, validate , parse } from 'graphql'
 import * as glob from 'glob'
 
-
-export interface QueryFileError {
+export interface IQueryFileError {
   file: string
   errors: string[]
 }
 
-export interface LoadQueryCallback {
-  (err, docs?: graphql.Document[])
+export interface ILoadQueryCallback {
+  (err, docs?: Document[])
 }
 
-export interface ValidateCallback {
-  (err, errors?: QueryFileError[])
+export interface IValidateCallback {
+  (err, errors?: IQueryFileError[])
 }
 
-export function validateQuery(schema: graphql.GraphQLSchema, document: graphql.Document): graphql.GraphQLError[] {
-  return graphql.validate(schema, document)
+export function validateQuery(schema: GraphQLSchema, document: Document): GraphQLError[] {
+  return validate(schema, document)
 }
 
-export function loadQueryFiles(glob: string | string[], callback?: LoadQueryCallback): Promise<graphql.Document[]> {
+export function loadQueryFiles(glob: string | string[], callback?: ILoadQueryCallback): Promise<Document[]> {
   return new Promise(async (resolve, reject) => {
     try {
       const files = glob instanceof Array ? glob : await readGlob(glob)
       const promises = files.map(readFile)
       Promise.all(promises).then((fileResults) => {
-        const docs = fileResults.map((text, index) => graphql.parse(text))
+        const docs = fileResults.map((text, index) => parse(text))
         callback ? callback(null, docs) : resolve(docs)
       }).catch((err) => {
         callback ? callback(err) : reject(err)
@@ -37,7 +36,8 @@ export function loadQueryFiles(glob: string | string[], callback?: LoadQueryCall
   })
 }
 
-export function validateQueryFiles(glob: string, schema: graphql.GraphQLSchema, callback?: ValidateCallback): Promise<QueryFileError[]> {
+export function validateQueryFiles(glob: string, schema: GraphQLSchema,
+                                   callback?: IValidateCallback): Promise<IQueryFileError[]> {
   return new Promise(async (resolve, reject) => {
     try {
       const files = await readGlob(glob)
@@ -50,7 +50,7 @@ export function validateQueryFiles(glob: string, schema: graphql.GraphQLSchema, 
   })
 }
 
-export function validateQueries(docs: graphql.Document[], schema: graphql.GraphQLSchema,  files?: string[]): QueryFileError[] {
+export function validateQueries(docs: Document[], schema: GraphQLSchema, files?: string[]): IQueryFileError[] {
   let results = []
 
   docs.forEach((doc, index) => {
@@ -58,8 +58,8 @@ export function validateQueries(docs: graphql.Document[], schema: graphql.GraphQ
 
     if (errs.length) {
       results.push({
-        file: files ? files[index] : '',
         errors: errs.map(err => err.toString()),
+        file: files ? files[index] : '',
       })
     }
   })

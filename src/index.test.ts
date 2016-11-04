@@ -163,7 +163,6 @@ describe('GraphQL Validator', () => {
     })
   })
 
-
   describe('#validateQueryFiles', () => {
     describe('when validating a query array', () => {
       let results
