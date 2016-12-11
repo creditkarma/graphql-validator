@@ -24,7 +24,7 @@ schema/rootQuery.graphql
 
 ```
 type RootQuery {
-  testString: string
+  testString: String
 }
 ```
 
