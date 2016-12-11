@@ -1,42 +1,50 @@
-import { expect } from 'chai'
-import * as glob from 'glob'
-import * as fs from 'fs'
-import * as rimraf from 'rimraf'
-import * as mkdirp from 'mkdirp'
-import * as graphql from 'graphql'
+import {expect} from 'code'
+import * as Lab from 'lab'
+export const lab = Lab.script()
+
+const describe = lab.describe
+const it = lab.it
+const before = lab.before
+
 import { loadSchema } from '@creditkarma/graphql-loader'
-import * as validator from './index'
+import * as fs from 'fs'
+import * as glob from 'glob'
+import * as graphql from 'graphql'
+import * as mkdirp from 'mkdirp'
+import * as rimraf from 'rimraf'
+import * as validator from '../index'
 
 describe('GraphQL Validator', () => {
   let schema: graphql.GraphQLSchema
-  before(() => {
-    return loadSchema('./fixtures/schema/**/*.graphql')
-      .then(r => schema = r)
-  })
+  before(() => loadSchema('./fixtures/schema/**/*.graphql').then((r) => schema = r))
 
   describe('when validating a valid query', () => {
     let results
-    before(() => {
+    before((done) => {
       const query = graphql.parse(`{allPeople{name}}`)
       results = validator.validateQuery(schema, query)
+      done()
     })
 
-    it('expect results to be an empty array', () => {
-      expect(results).to.exist
+    it('expect results to be an empty array', (done) => {
+      expect(results).to.exist()
       expect(results.length).to.equal(0)
+      done()
     })
   })
 
   describe('when validating a invalid query', () => {
     let results
-    before(() => {
+    before((done) => {
       const query = graphql.parse(`{allPeople{anInvalidFieldName}}`)
       results = validator.validateQuery(schema, query)
+      done()
     })
 
-    it('expect errors to exist', () => {
+    it('expect errors to exist', (done) => {
       expect(results.length).to.equal(1)
       expect(results[0].message).to.contain('anInvalidFieldName')
+      done()
     })
   })
 
@@ -46,7 +54,7 @@ describe('GraphQL Validator', () => {
       let results
       let cbResults
       before((done) => {
-        return validator.loadQueryFiles(glob).then(r => {
+        validator.loadQueryFiles(glob).then((r) => {
           results = r
           validator.loadQueryFiles(glob, (err, cbr) => {
             cbResults = cbr
@@ -55,11 +63,13 @@ describe('GraphQL Validator', () => {
         })
       })
 
-      it('expect results to be two', () => {
+      it('expect results to be two', (done) => {
         expect(results.length).to.equal(2)
+        done()
       })
-      it('expect callback results to be two', () => {
+      it('expect callback results to be two', (done) => {
         expect(cbResults.length).to.equal(2)
+        done()
       })
     })
 
@@ -77,11 +87,13 @@ describe('GraphQL Validator', () => {
         })
       })
 
-      it('expect results to empty', () => {
+      it('expect results to empty', (done) => {
         expect(results.length).to.exist
+        done()
       })
-      it('expect callback results to empty', () => {
+      it('expect callback results to empty', (done) => {
         expect(cbResults.length).to.exist
+        done()
       })
     })
 
@@ -102,11 +114,13 @@ describe('GraphQL Validator', () => {
         })
       })
 
-      it('expect error to exist', () => {
+      it('expect error to exist', (done) => {
         expect(results).to.exist
+        done()
       })
-      it('expect callback error to exist', () => {
+      it('expect callback error to exist', (done) => {
         expect(cbResults).to.exist
+        done()
       })
     })
 
@@ -129,11 +143,13 @@ describe('GraphQL Validator', () => {
         })
       })
 
-      it('expect error to exist', () => {
+      it('expect error to exist', (done) => {
         expect(results).to.exist
+        done()
       })
-      it('expect callback error to exist', () => {
+      it('expect callback error to exist', (done) => {
         expect(cbResults).to.exist
+        done()
       })
     })
 
@@ -144,7 +160,7 @@ describe('GraphQL Validator', () => {
       before((done) => {
         glob('./fixtures/queries/*.graphql', (_, files) => {
           fileNames = files
-          results = validator.loadQueryFiles(files).then(r => {
+          validator.loadQueryFiles(files).then((r) => {
             results = r
             validator.loadQueryFiles(files, (err, cbr) => {
               cbResults = cbr
@@ -154,11 +170,13 @@ describe('GraphQL Validator', () => {
         })
       })
 
-      it('should load one query per file', () => {
+      it('should load one query per file', (done) => {
         expect(results.length).to.equal(fileNames.length)
+        done()
       })
-      it('should load one query per file by callback', () => {
+      it('should load one query per file by callback', (done) => {
         expect(cbResults.length).to.equal(fileNames.length)
+        done()
       })
     })
   })
@@ -167,24 +185,52 @@ describe('GraphQL Validator', () => {
     describe('when validating a query array', () => {
       let results
       before(() => {
-        return validator.loadQueryFiles('./fixtures/queries/*.graphql').then(queries => {
+        return validator.loadQueryFiles('./fixtures/queries/*.graphql').then((queries) => {
           results = validator.validateQueries(queries, schema)
         })
       })
 
-      it('expect results to be emtpy', () => {
+      it('expect results to be emtpy', (done) => {
         expect(results.length).to.equal(0)
+        done()
+      })
+    })
+
+    describe('when validating a query array with invalid queries', () => {
+      let results
+      before(() => {
+        return validator.loadQueryFiles('./fixtures/queries/**/*.graphql').then((queries) => {
+          results = validator.validateQueries(queries, schema)
+        })
+      })
+
+      it('expect results to be equal 1', (done) => {
+        expect(results.length).to.equal(1)
+        done()
       })
     })
 
     describe('when validating a query glob', () => {
       let results
-      before(() => {
-        return validator.validateQueryFiles('./fixtures/queries/*.graphql', schema)
+      let cbResults
+      let glob = './fixtures/queries/*.graphql'
+      before((done) => {
+        validator.validateQueryFiles(glob, schema).then((r) => {
+          results = r
+          validator.validateQueryFiles(glob, schema, (err, cbr) => {
+            cbResults = cbr
+            done()
+          })
+        })
       })
 
-      it('expect results to be empty', () => {
+      it('expect results to be empty', (done) => {
         expect(results).to.be.undefined
+        done()
+      })
+      it('expect callback results to be empty', (done) => {
+        expect(results).to.be.undefined
+        done()
       })
     })
 
@@ -192,11 +238,12 @@ describe('GraphQL Validator', () => {
       let results
       before(() => {
         return validator.validateQueryFiles('./fixtures/queries/**/*.graphql', schema)
-          .then(r => {results = r})
+          .then((r) => {results = r})
       })
 
-      it('expect validation results to exist', () => {
+      it('expect validation results to exist', (done) => {
         expect(results.length).to.equal(1)
+        done()
       })
     })
 
@@ -219,11 +266,13 @@ describe('GraphQL Validator', () => {
         })
       })
 
-      it('expect error to exist', () => {
+      it('expect error to exist', (done) => {
         expect(results).to.exist
+        done()
       })
-      it('expect callback error to exist', () => {
+      it('expect callback error to exist', (done) => {
         expect(cbResults).to.exist
+        done()
       })
     })
 
