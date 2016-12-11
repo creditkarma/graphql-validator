@@ -160,7 +160,7 @@ describe('GraphQL Validator', () => {
       before((done) => {
         glob('./fixtures/queries/*.graphql', (_, files) => {
           fileNames = files
-          results = validator.loadQueryFiles(files).then((r) => {
+          validator.loadQueryFiles(files).then((r) => {
             results = r
             validator.loadQueryFiles(files, (err, cbr) => {
               cbResults = cbr
@@ -196,13 +196,39 @@ describe('GraphQL Validator', () => {
       })
     })
 
-    describe('when validating a query glob', () => {
+    describe('when validating a query array with invalid queries', () => {
       let results
       before(() => {
-        return validator.validateQueryFiles('./fixtures/queries/*.graphql', schema)
+        return validator.loadQueryFiles('./fixtures/queries/**/*.graphql').then((queries) => {
+          results = validator.validateQueries(queries, schema)
+        })
+      })
+
+      it('expect results to be equal 1', (done) => {
+        expect(results.length).to.equal(1)
+        done()
+      })
+    })
+
+    describe('when validating a query glob', () => {
+      let results
+      let cbResults
+      let glob = './fixtures/queries/*.graphql'
+      before((done) => {
+        validator.validateQueryFiles(glob, schema).then((r) => {
+          results = r
+          validator.validateQueryFiles(glob, schema, (err, cbr) => {
+            cbResults = cbr
+            done()
+          })
+        })
       })
 
       it('expect results to be empty', (done) => {
+        expect(results).to.be.undefined
+        done()
+      })
+      it('expect callback results to be empty', (done) => {
         expect(results).to.be.undefined
         done()
       })
