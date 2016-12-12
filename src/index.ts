@@ -12,7 +12,7 @@ export interface ILoadQueryCallback {
 }
 
 export interface IValidateCallback {
-  (err, errors?: IQueryFileError[])
+  (errors?: IQueryFileError[], results?)
 }
 
 export function validateQuery(schema: GraphQLSchema, document: Document): GraphQLError[] {
@@ -51,9 +51,19 @@ export function validateQueryFiles(glob: string, schema: GraphQLSchema,
       })
       .then((docs) => {
         const errors = validateQueries(docs, schema, queries)
-        callback ? callback(null, errors) : resolve(errors)
+        if (errors.length) {
+          callback ? callback(errors) : reject(errors)
+        } else {
+          callback ? callback() : resolve()
+        }
       })
-      .catch((err) => callback ? callback(err) : reject(err))
+      .catch((err) => {
+        const errs = [{
+          errors: [err.toString()],
+          file: '',
+        }]
+        callback ? callback(errs) : reject(errs)
+      })
   })
 }
 
