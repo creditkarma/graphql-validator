@@ -51,8 +51,12 @@ const loadSchema = require('@creditkarma/graphql-loader')
 const validator = require('@creditkarma/graphql-validator')
 
 loadSchema('./schema/*.graphql', (err, schema) => {
-  validator.validateQueryFiles('./queries/*.graphql', schema, (err, results) => {
-    console.log(results)
+  validator.validateQueryFiles('./queries/*.graphql', schema, (errors) => {
+    if (errors) {
+         console.log('errors', errors);
+    } else {
+        console.log('All queries validated');
+    }
   })
 })
 ```
