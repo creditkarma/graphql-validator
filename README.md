@@ -4,8 +4,16 @@ A CLI tool to validate queries against a GraphQL Schema.  The primary use case f
 
 ## Installation
 
+To use the validator as a command line tool
+
 ```sh
-npm install -g @creditkarma/graphql-validator
+npm install -g graphql @creditkarma/graphql-validator
+```
+
+To use the validator locally in a project
+
+```sh
+npm install --save graphql @creditkarma/graphql-validator
 ```
 
 ## Usage
