@@ -236,12 +236,20 @@ describe('GraphQL Validator', () => {
 
     describe('when validating a query glob with invalid queries', () => {
       let results
-      before(() => {
-        return validator.validateQueryFiles('./fixtures/queries/**/*.graphql', schema)
-          .then((r) => {results = r})
+      let cbResults
+      let glob = './fixtures/queries/**/*.graphql'
+      before((done) => {
+        validator.validateQueryFiles(glob, schema).catch((r) => {
+          results = r
+          validator.validateQueryFiles(glob, schema, (err, cbr) => {
+            cbResults = cbr
+            done()
+          })
+        })
       })
 
       it('expect validation results to exist', (done) => {
+        expect(results).to.be.an.array()
         expect(results.length).to.equal(1)
         done()
       })

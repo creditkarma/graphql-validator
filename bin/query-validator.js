@@ -23,10 +23,7 @@ if (!program.args.length || !program.schema) {
 } else {
   loadSchema()
     .then(validateQueries)
-    .catch((err) => {
-      console.log(err)
-      process.exit(1)
-    })
+    .catch((err) => process.exit(1))
 }
 
 function loadSchema() {
@@ -44,15 +41,12 @@ function loadSchema() {
   })
 }
 
-function validateQueries(schema) {
+function validateQueries(validSchema) {
   return new Promise((resolve, reject) => {
     const globArg = program.args[0]
     console.log(`\nValidating queries for ${globArg} using loaded schema`)
 
-    validator.validateQueryFiles(globArg, schema).then(() => {
-      console.log('All queries are valid\n')
-      resolve()
-    }).catch((errs) => {
+    function outputErrors(errs) {
       console.log('\nErrors found:')
       errs.forEach((err) => {
         console.log(`\nFile: ${err.file}`)
@@ -61,6 +55,18 @@ function validateQueries(schema) {
         })
       })
       console.log('\n')
+    }
+
+    validator.validateQueryFiles(globArg, validSchema).then((errs) => {
+      if (!errs) {
+        console.log('All queries are valid\n')
+        resolve()
+      } else {
+        outputErrors(errs)
+        reject(errs)
+      }
+    }).catch((errs) => {
+      outputErrors(errs)
       reject(errs)
     })
   })

@@ -38,11 +38,13 @@
     "typescript": "^2.1.0"
   },
   "dependencies": {
-    "@creditkarma/graphql-loader": "^0.1.9",
+    "@creditkarma/graphql-loader": "^0.2.0",
     "commander": "^2.9.0",
     "glob": "^7.0.5",
-    "graphql": "^0.6.1 || ^0.8.2",
     "graphql-tools": "^0.8.0"
+  },
+  "peerDependencies": {
+    "graphql": "^0.6.1 || ^0.8.2"
   },
   "typings": "dist/index.d.ts",
   "typescript": {
