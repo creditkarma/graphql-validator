@@ -1,6 +1,6 @@
 import * as fs from 'fs'
 import * as glob from 'glob'
-import { Document, GraphQLError, GraphQLSchema, parse, validate } from 'graphql'
+import { DocumentNode, GraphQLError, GraphQLSchema, parse, validate } from 'graphql'
 
 export interface IQueryFileError {
   file: string
@@ -8,18 +8,18 @@ export interface IQueryFileError {
 }
 
 export interface ILoadQueryCallback {
-  (err, docs?: Document[])
+  (err, docs?: DocumentNode[])
 }
 
 export interface IValidateCallback {
   (errors?: IQueryFileError[], results?)
 }
 
-export function validateQuery(schema: GraphQLSchema, document: Document): GraphQLError[] {
+export function validateQuery(schema: GraphQLSchema, document: DocumentNode): GraphQLError[] {
   return validate(schema, document)
 }
 
-export function loadQueryFiles(glob: string | string[], callback?: ILoadQueryCallback): Promise<Document[]> {
+export function loadQueryFiles(glob: string | string[], callback?: ILoadQueryCallback): Promise<DocumentNode[]> {
   return new Promise((resolve, reject) => {
     function loadAll(files) {
       const promises = files.map(readFile)
@@ -67,7 +67,7 @@ export function validateQueryFiles(glob: string, schema: GraphQLSchema,
   })
 }
 
-export function validateQueries(docs: Document[], schema: GraphQLSchema, files?: string[]): IQueryFileError[] {
+export function validateQueries(docs: DocumentNode[], schema: GraphQLSchema, files?: string[]): IQueryFileError[] {
   let results = []
 
   docs.forEach((doc, index) => {
