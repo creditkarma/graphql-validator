@@ -21,15 +21,15 @@ program
 if (!program.args.length || !program.schema) {
   program.outputHelp()
 } else {
-  loadSchema()
-    .then(validateQueries)
+  loadSchema(program.schema)
+    .then((schema) => validateQueries(program.args[0], schema))
     .catch((err) => process.exit(1))
 }
 
-function loadSchema() {
+function loadSchema(schemaPattern) {
   return new Promise((resolve, reject) => {
-    console.log(`\nLoading schema from ${program.schema}`)
-    loader.loadSchema(program.schema)
+    console.log(`\nLoading schema from ${schemaPattern}`)
+    loader.loadSchema(schemaPattern)
     .then((schema) => {
       console.log('valid schema loaded...')
       resolve(schema)
@@ -41,10 +41,9 @@ function loadSchema() {
   })
 }
 
-function validateQueries(validSchema) {
+function validateQueries(queriesPattern, validSchema) {
   return new Promise((resolve, reject) => {
-    const globArg = program.args[0]
-    console.log(`\nValidating queries for ${globArg} using loaded schema`)
+    console.log(`\nValidating queries for ${queriesPattern} using loaded schema`)
 
     function outputErrors(errs) {
       console.log('\nErrors found:')
@@ -57,7 +56,7 @@ function validateQueries(validSchema) {
       console.log('\n')
     }
 
-    validator.validateQueryFiles(globArg, validSchema).then((errs) => {
+    validator.validateQueryFiles(queriesPattern, validSchema).then((errs) => {
       if (!errs) {
         console.log('All queries are valid\n')
         resolve()
