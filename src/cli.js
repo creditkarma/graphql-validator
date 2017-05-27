@@ -34,14 +34,9 @@ function validateQueries(queriesPattern, validSchema) {
       console.log('\n')
     }
 
-    validator.validateQueryFiles(queriesPattern, validSchema).then((errs) => {
-      if (!errs) {
-        console.log('All queries are valid\n')
-        resolve()
-      } else {
-        outputErrors(errs)
-        reject(errs)
-      }
+    validator.validateQueryFiles(queriesPattern, validSchema).then(() => {
+      console.log('All queries are valid\n')
+      resolve()
     }).catch((errs) => {
       outputErrors(errs)
       reject(errs)
