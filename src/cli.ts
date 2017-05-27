@@ -1,9 +1,7 @@
-'use strict'
+import * as loader from '@creditkarma/graphql-loader'
+import * as validator from './index'
 
-const loader = require('@creditkarma/graphql-loader')
-const validator = require('./index')
-
-function loadSchema(schemaPattern) {
+export function loadSchema(schemaPattern: string): Promise<loader.GraphQLSchema> {
   return new Promise((resolve, reject) => {
     console.log(`\nLoading schema from ${schemaPattern}`)
     loader.loadSchema(schemaPattern)
@@ -17,10 +15,9 @@ function loadSchema(schemaPattern) {
     })
   })
 }
-exports.loadSchema = loadSchema
 
-function validateQueries(queriesPattern, validSchema) {
-  return new Promise((resolve, reject) => {
+export function validateQueries(queriesPattern: string, validSchema: loader.GraphQLSchema): Promise<void> {
+  return new Promise<void>((resolve, reject) => {
     console.log(`\nValidating queries for ${queriesPattern} using loaded schema`)
 
     function outputErrors(errs) {
@@ -43,4 +40,3 @@ function validateQueries(queriesPattern, validSchema) {
     })
   })
 }
-exports.validateQueries = validateQueries
