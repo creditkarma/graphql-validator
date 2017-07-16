@@ -225,11 +225,17 @@ describe('GraphQL Validator', () => {
       })
 
       it('expect results to be empty', (done) => {
-        expect(results).to.be.undefined()
+        expect(results).to.be.instanceOf(Array)
+            .and.to.have.length(2)
+            .and.to.contain('./fixtures/queries/allFilms.graphql')
+            .and.to.contain('./fixtures/queries/allPeople.graphql')
         done()
       })
       it('expect callback results to be empty', (done) => {
-        expect(results).to.be.undefined()
+        expect(cbResults).to.be.instanceOf(Array)
+            .and.to.have.length(2)
+            .and.to.contain('./fixtures/queries/allFilms.graphql')
+            .and.to.contain('./fixtures/queries/allPeople.graphql')
         done()
       })
     })

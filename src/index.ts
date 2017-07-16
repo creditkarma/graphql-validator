@@ -12,7 +12,7 @@ export interface ILoadQueryCallback {
 }
 
 export interface IValidateCallback {
-  (errors?: IQueryFileError[], results?)
+  (errors?: IQueryFileError[], results?: DocumentNode[])
 }
 
 export function validateQuery(schema: GraphQLSchema, document: DocumentNode): GraphQLError[] {
@@ -54,7 +54,7 @@ export function validateQueryFiles(glob: string, schema: GraphQLSchema,
         if (errors.length) {
           callback ? callback(errors) : reject(errors)
         } else {
-          callback ? callback() : resolve()
+          callback ? callback(null, queries) : resolve(queries)
         }
       })
       .catch((err) => {
