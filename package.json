@@ -2,6 +2,9 @@
   "name": "@creditkarma/graphql-validator",
   "version": "0.3.0",
   "description": "Validate queries agains a GraphQL Schema",
+  "repository": {
+    "url": "https://github.com/creditkarma/graphql-validator"
+  },
   "main": "./dist/index.js",
   "scripts": {
     "clean": "rimraf coverage/ dist/ node_modules/",
@@ -12,7 +15,11 @@
     "test": "npm run test:only --",
     "test:watch": "npm test -- -w",
     "test:only": "lab  -c -S ./dist/test",
-    "coverage": "lab -c -S -r console -o stdout -r html -o ./coverage/coverage.html ./dist/test"
+    "coverage": "lab -c -S -r console -o stdout -r html -o ./coverage/coverage.html ./dist/test",
+    "release:patch": "npm version patch && npm run release:publish",
+    "release:minor": "npm version minor && npm run release:publish",
+    "release:major": "npm version major && npm run release:publish",
+    "release:publish": "npm publish && git push --follow-tags"
   },
   "bin": {
     "graphql-validator": "./bin/query-validator.js"
@@ -27,25 +34,24 @@
     "@types/glob": "^5.0.30",
     "@types/graphql": "^0.9.0",
     "@types/lab": "^11.1.0",
-    "@types/mkdirp": "^0.3.29",
-    "@types/node": "^6.0.46",
+    "@types/mkdirp": "^0.5.0",
+    "@types/node": "^8.0.0",
     "@types/rimraf": "0.0.28",
     "code": "^4.0.0",
-    "graphql": "^0.9.0",
-    "lab": "^11.2.1",
+    "lab": "^14.1.0",
     "mkdirp": "^0.5.1",
-    "rimraf": "^2.5.4",
-    "tslint": "^4.0.2",
-    "typescript": "^2.1.0"
+    "rimraf": "^2.6.1",
+    "tslint": "^5.5.0",
+    "typescript": "^2.4.1"
   },
   "dependencies": {
-    "@creditkarma/graphql-loader": "^0.3.0",
-    "commander": "^2.9.0",
-    "glob": "^7.0.5",
-    "graphql-tools": "^0.11.0"
+    "@creditkarma/graphql-loader": "^0.6.3",
+    "commander": "^2.11.0",
+    "glob": "^7.1.2",
+    "graphql-tools": "^1.1.0"
   },
   "peerDependencies": {
-    "graphql": "^0.9.0"
+    "graphql": "^0.9.0 || ^0.10.1"
   },
   "typescript": {
     "definition": "dist/index.d.ts"

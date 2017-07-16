@@ -50,13 +50,13 @@ describe('GraphQL Validator', () => {
 
   describe('#loadQueryFiles', () => {
     describe('when loading a query glob', () => {
-      const glob = './fixtures/queries/{allFilms,allPeople}.graphql'
+      const gqlGlob = './fixtures/queries/{allFilms,allPeople}.graphql'
       let results
       let cbResults
       before((done) => {
-        validator.loadQueryFiles(glob).then((r) => {
+        validator.loadQueryFiles(gqlGlob).then((r) => {
           results = r
-          validator.loadQueryFiles(glob, (err, cbr) => {
+          validator.loadQueryFiles(gqlGlob, (err, cbr) => {
             cbResults = cbr
             done()
           })
@@ -74,13 +74,13 @@ describe('GraphQL Validator', () => {
     })
 
     describe('when passing an invalid glob', () => {
-      const glob = './fixtures/queries/{allFilms,allPeople}.test'
+      const gqlGlob = './fixtures/queries/{allFilms,allPeople}.test'
       let results
       let cbResults
       before((done) => {
-        validator.loadQueryFiles(glob).then((r) => {
+        validator.loadQueryFiles(gqlGlob).then((r) => {
           results = r
-          validator.loadQueryFiles(glob, (err, cbr) => {
+          validator.loadQueryFiles(gqlGlob, (err, cbr) => {
             cbResults = cbr
             done()
           })
@@ -88,25 +88,25 @@ describe('GraphQL Validator', () => {
       })
 
       it('expect results to empty', (done) => {
-        expect(results.length).to.exist
+        expect(results.length).to.exist()
         done()
       })
       it('expect callback results to empty', (done) => {
-        expect(cbResults.length).to.exist
+        expect(cbResults.length).to.exist()
         done()
       })
     })
 
     describe('when accessing inaccessable path in glob', () => {
       const root = './fixtures/test'
-      const glob = `${root}/*.graphql`
+      const gqlGlob = `${root}/*.graphql`
       let results
       let cbResults
       before((done) => {
         mkdirp(root, '333', () => {
-          validator.loadQueryFiles(glob).catch((r) => {
+          validator.loadQueryFiles(gqlGlob).catch((r) => {
             results = r
-            validator.loadQueryFiles(glob, (cbr) => {
+            validator.loadQueryFiles(gqlGlob, (cbr) => {
               cbResults = cbr
               rimraf(root, done)
             })
@@ -115,26 +115,26 @@ describe('GraphQL Validator', () => {
       })
 
       it('expect error to exist', (done) => {
-        expect(results).to.exist
+        expect(results).to.exist()
         done()
       })
       it('expect callback error to exist', (done) => {
-        expect(cbResults).to.exist
+        expect(cbResults).to.exist()
         done()
       })
     })
 
     describe('when accessing unreadable file in glob', () => {
       const root = './fixtures/queries/unreadable'
-      const glob = `${root}/*.graphql`
+      const gqlGlob = `${root}/*.graphql`
       let results
       let cbResults
       before((done) => {
         mkdirp(root, () => {
           fs.writeFile(`${root}/operation.graphql`, 'hello', {mode: 333}, (err) => {
-            validator.loadQueryFiles(glob).catch((r) => {
+            validator.loadQueryFiles(gqlGlob).catch((r) => {
               results = r
-              validator.loadQueryFiles(glob, (cbr) => {
+              validator.loadQueryFiles(gqlGlob, (cbr) => {
                 cbResults = cbr
                 rimraf(root, done)
               })
@@ -144,11 +144,11 @@ describe('GraphQL Validator', () => {
       })
 
       it('expect error to exist', (done) => {
-        expect(results).to.exist
+        expect(results).to.exist()
         done()
       })
       it('expect callback error to exist', (done) => {
-        expect(cbResults).to.exist
+        expect(cbResults).to.exist()
         done()
       })
     })
@@ -211,13 +211,13 @@ describe('GraphQL Validator', () => {
     })
 
     describe('when validating a query glob', () => {
+      const gqlGlob = './fixtures/queries/*.graphql'
       let results
       let cbResults
-      let glob = './fixtures/queries/*.graphql'
       before((done) => {
-        validator.validateQueryFiles(glob, schema).then((r) => {
+        validator.validateQueryFiles(gqlGlob, schema).then((r) => {
           results = r
-          validator.validateQueryFiles(glob, schema, (err, cbr) => {
+          validator.validateQueryFiles(gqlGlob, schema, (err, cbr) => {
             cbResults = cbr
             done()
           })
@@ -225,23 +225,23 @@ describe('GraphQL Validator', () => {
       })
 
       it('expect results to be empty', (done) => {
-        expect(results).to.be.undefined
+        expect(results).to.be.undefined()
         done()
       })
       it('expect callback results to be empty', (done) => {
-        expect(results).to.be.undefined
+        expect(results).to.be.undefined()
         done()
       })
     })
 
     describe('when validating a query glob with invalid queries', () => {
+      const gqlGlob = './fixtures/queries/**/*.graphql'
       let results
       let cbResults
-      let glob = './fixtures/queries/**/*.graphql'
       before((done) => {
-        validator.validateQueryFiles(glob, schema).catch((r) => {
+        validator.validateQueryFiles(gqlGlob, schema).catch((r) => {
           results = r
-          validator.validateQueryFiles(glob, schema, (err, cbr) => {
+          validator.validateQueryFiles(gqlGlob, schema, (err, cbr) => {
             cbResults = cbr
             done()
           })
@@ -257,15 +257,15 @@ describe('GraphQL Validator', () => {
 
     describe('when validating a glob with unreadable files', () => {
       const root = './fixtures/queries/unreadable'
-      const glob = `${root}/*.graphql`
+      const gqlGlob = `${root}/*.graphql`
       let results
       let cbResults
       before((done) => {
         mkdirp(root, () => {
           fs.writeFile(`${root}/operation.graphql`, 'hello', {mode: '333'}, (err) => {
-            validator.validateQueryFiles(glob, schema).catch((r) => {
+            validator.validateQueryFiles(gqlGlob, schema).catch((r) => {
               results = r
-              validator.validateQueryFiles(glob, schema, (cbr) => {
+              validator.validateQueryFiles(gqlGlob, schema, (cbr) => {
                 cbResults = cbr
                 rimraf(root, done)
               })
@@ -275,11 +275,11 @@ describe('GraphQL Validator', () => {
       })
 
       it('expect error to exist', (done) => {
-        expect(results).to.exist
+        expect(results).to.exist()
         done()
       })
       it('expect callback error to exist', (done) => {
-        expect(cbResults).to.exist
+        expect(cbResults).to.exist()
         done()
       })
     })
