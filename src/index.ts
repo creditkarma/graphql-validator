@@ -1,5 +1,5 @@
 import * as fs from 'fs'
-import * as glob from 'glob'
+import * as globUtil from 'glob'
 import { DocumentNode, GraphQLError, GraphQLSchema, parse, validate } from 'graphql'
 
 export interface IQueryFileError {
@@ -68,7 +68,7 @@ export function validateQueryFiles(glob: string, schema: GraphQLSchema,
 }
 
 export function validateQueries(docs: DocumentNode[], schema: GraphQLSchema, files?: string[]): IQueryFileError[] {
-  let results = []
+  const results = []
 
   docs.forEach((doc, index) => {
     const errs = validateQuery(schema, doc)
@@ -86,7 +86,7 @@ export function validateQueries(docs: DocumentNode[], schema: GraphQLSchema, fil
 
 function readGlob(pattern: string): Promise<string[]> {
   return new Promise((resolve, reject) => {
-    glob(pattern, {silent: true}, (err, files) => err ? reject(err) : resolve(files))
+    globUtil(pattern, {silent: true}, (err, files) => err ? reject(err) : resolve(files))
   })
 }
 
